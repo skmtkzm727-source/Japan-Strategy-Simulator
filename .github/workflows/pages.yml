@@ -21,37 +21,29 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - name: Extract NATION FRONTIER
+      - name: Reconstruct game source
         run: |
+          cat source/archive.part* | base64 -d > /tmp/nation-frontier.tar.gz
+          gzip -t /tmp/nation-frontier.tar.gz
           mkdir -p public
-          tar -xJf source/nation-frontier.tar.xz -C public --strip-components=1
+          tar -xzf /tmp/nation-frontier.tar.gz -C public --strip-components=1
           test -s public/index.html
           test -s public/src/main.js
           test -s public/src/simulation.js
-          test -s public/package.json
-
-      - name: Test simulation and check JavaScript
+      - name: Test game core
         working-directory: public
         run: |
           npm test
           npm run check
-
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
