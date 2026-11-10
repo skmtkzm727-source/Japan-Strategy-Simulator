@@ -32,14 +32,16 @@ jobs:
         with:
           node-version: 22
 
-      - name: Extract game source
+      - name: Extract NATION FRONTIER
         run: |
           mkdir -p public
-          tar -xzf source/nation-frontier.tar.gz -C public --strip-components=1
+          tar -xJf source/nation-frontier.tar.xz -C public --strip-components=1
           test -s public/index.html
           test -s public/src/main.js
+          test -s public/src/simulation.js
+          test -s public/package.json
 
-      - name: Test game core
+      - name: Test simulation and check JavaScript
         working-directory: public
         run: |
           npm test
