@@ -42,6 +42,9 @@ jobs:
           test -s public/src/simulation.js
           test -s public/package.json
 
+      - name: Apply release patch
+        run: node scripts/patch-release.mjs public
+
       - name: Test simulation and check JavaScript
         working-directory: public
         run: |
