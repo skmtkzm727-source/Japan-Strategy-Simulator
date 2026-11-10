@@ -1,4 +1,4 @@
-name: Deploy Japan Strategy Simulator to GitHub Pages
+name: Test and Deploy NATION FRONTIER to GitHub Pages
 
 on:
   push:
@@ -27,10 +27,28 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload site
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Extract game source
+        run: |
+          mkdir -p public
+          tar -xzf source/nation-frontier.tar.gz -C public --strip-components=1
+          test -s public/index.html
+          test -s public/src/main.js
+
+      - name: Test game core
+        working-directory: public
+        run: |
+          npm test
+          npm run check
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: public
 
       - name: Deploy to GitHub Pages
         id: deployment

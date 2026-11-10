@@ -1,50 +1,57 @@
 # NATION FRONTIER
-### Japan Grand Strategy & City Builder
 
-日本を舞台に、国家運営・都市開発・産業・交通・研究・外交・防衛を融合するブラウザ向けシミュレーションゲームです。
+日本を舞台にした国家運営・都市開発・産業・交通・研究・外交・防衛シミュレーションです。
 
-## ゲームの方針
+## 現在の構成
 
-- **舞台:** 日本
-- **マップ:** 全国戦略マップと、選択地域の都市開発マップを切り替え
-- **時代:** 現代から近未来へ
-- **ゲーム性:** 経済・都市開発・物流・研究・外交・安全保障を一体化
-- **実行環境:** HTML / CSS / JavaScript。ビルド工程なしでGitHub Pagesに配置できる構成
+- **舞台:** 日本（47都道府県）
+- **マップ:** 全国戦略マップと都道府県別の都市開発マップ
+- **時代:** 現代から近未来
+- **ゲーム:** 経済・都市開発・物流・研究・外交・防衛を融合
+- **実装:** ブラウザ向けHTML/CSS/JavaScript ES Modules
 
-## 現在のプロトタイプ
-
-現在の `index.html` は、既存のゲーム実装を引き継いだ初期プロトタイプです。
-
-- 日本全国の地域選択
-- 地域ごとの都市開発画面
-- 24×16区画への道路・鉄道・住宅・商業施設・工場・発電所の配置
-- 研究項目と国家方針
-- 月次時間進行、速度切り替え、一時停止
-- localStorageによるブラウザ内セーブ
-
-現時点の全国マップや地域データはゲーム用の簡略表現です。実際の行政界、地形、人口・産業統計と一致する完成版データではありません。経済・研究等の数値も初期バランス用の仮データです。
-
-## 起動
-
-GitHub Pages公開URL、またはローカルの静的HTTPサーバーで起動できます。
-
-```bash
-python3 -m http.server 8000
-```
-
-ブラウザで `http://localhost:8000` を開きます。HTMLを直接 `file://` で開くより、HTTPサーバー経由での確認を推奨します。
+旧単一HTML版は削除し、NATION FRONTIERのソース一式を `source/nation-frontier.tar.gz` に格納しています。Pagesのデプロイ時に展開されます。
 
 ## GitHub Pages
 
-`.github/workflows/pages.yml` が `main` ブランチへのpushを検知してPagesへデプロイします。Actionsの `Deploy Japan Strategy Simulator to GitHub Pages` の実行結果で公開状態を確認してください。
+mainへのpushでGitHub Actionsが次の処理を実行します。
+
+1. ソースアーカイブを展開
+2. Node.jsで自動テストと構文チェック
+3. GitHub Pagesへ公開
+
+Actionsの「Test and Deploy NATION FRONTIER to GitHub Pages」で実行結果を確認してください。
+
+## ローカル起動
+
+```bash
+mkdir -p nation-frontier
+tar -xzf source/nation-frontier.tar.gz --strip-components=1 -C nation-frontier
+cd nation-frontier
+npm test
+npm run check
+npm start
+```
+
+ブラウザで `http://localhost:8000` を開きます。
+
+## 主な実装
+
+- 47都道府県の戦略マップと地域運営
+- 都道府県ごとに独立した都市区画データ
+- 都市ゲートにつながる道路・鉄道ネットワーク
+- 接続済み施設の判定と孤立防止
+- 電力需給・物流容量・工場の実効生産
+- 税率・財政・GDP・人口・地域支持
+- 研究ツリーと技術解禁型の建設メニュー
+- 外交協定、防衛・国土強靱化
+- localStorageセーブと旧セーブの移行
+- 11項目の自動テスト
 
 ## 開発ドキュメント
 
-- [ゲーム設計](docs/GAME_DESIGN.md)
-- [実装ロードマップ](docs/IMPLEMENTATION_ROADMAP.md)
-- [Simutransコード利用方針](docs/SIMUTRANS_POLICY.md)
-- [第三者ライセンス一覧](THIRD_PARTY_NOTICES.md)
+ソースアーカイブ内の `README.md`、`docs/GAME_DESIGN.md`、`docs/SIMUTRANS_POLICY.md`、`THIRD_PARTY_NOTICES.md` を参照してください。
 
-## ライセンス・参考作品
+## ライセンスと参考作品
 
-HOI4、Simutrans、47国志はゲームデザイン上の参考です。各作品のコード、画像、音源、フォント、ゲームデータを無断でコピーしません。Simutrans由来コードを採用する場合は、対象コードを特定し、適用ライセンスと配布条件を個別に確認したうえで、著作権表示・ライセンス文書・改変履歴を保全します。詳細は上記ドキュメントを参照してください。
+HOI4、Simutrans、47国志、iOS 27 Design Systemは設計上の参考です。現行ソースアーカイブにはSimutrans由来コードや各作品の画像・音源・専有素材は含めていません。Simutransのコードを取り込む場合は、Artistic License 1.0の条件とファイルごとの由来・変更履歴を確認してから別途実装します。
